@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Sneaky-Reader 🤫</h1>
   <p><strong>Hide your book under a fancy terminal</strong></p>
-  <p><strong>上班摸鱼的幻影坦克</strong></p>
+  <p><strong>上班看书的幻影坦克</strong></p>
 </div>
 
 
@@ -11,8 +11,9 @@
       <img src="./assets/en-2.png" width="32%" align="center"/>
       <img src="./assets/en-3.png" width="32%" align="center"/>
   </div>
-  <a align="center">  That's a fake code, don't actually read it.</a>
+  <a align="center"> Find dickens in those images</a>
 </div>
+
 
 
 
