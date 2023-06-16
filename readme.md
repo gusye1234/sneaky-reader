@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Sneaky-Reader 🤫</h1>
-  <p><strong>Hide your book under a fancy terminal</strong></p>
-  <p><strong>上班看书的幻影坦克</strong></p>
+  <p><strong>上班看书的幻影坦克 | Hide your book under a fancy terminal</strong></p>
+  <a href="https://pypi.org/project/sneaky-reader/"><img src="https://img.shields.io/pypi/v/sneaky_reader.svg"></a>
 </div>
 
 
@@ -43,7 +43,9 @@ Sneaky-reader supports you to use regluar expression (refer to the `re` module i
 Remember, always group your chapter name in first in your regular expression! *group the title with `()`*
 ## Quick Start
 
-Clone and enter this repo, then install with `pip install -e .`. Then you have a shell command `sneaky_reader` to use!
+* Via `pip`: `pip install sneaky-reader`
+* Via sources: clone and enter this repo, then install with `pip install -e .`. 
+Then you have a shell command `sneaky_reader` to use!
 
 For the demo books, you could start with commands
 ```/shell
