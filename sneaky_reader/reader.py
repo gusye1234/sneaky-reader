@@ -14,38 +14,6 @@ from textual.driver import Driver
 from textual.reactive import var
 from textual.widgets import DirectoryTree, Footer, Header, Static, ListItem, Label, TextLog, LoadingIndicator, OptionList
 
-FAKE_CODE = '''\
-def loop_first_last(values: Iterable[T]) -> Iterable[tuple[bool, bool, T]]:
-    """Iterate and generate a tuple with a flag for first and last value."""
-    iter_values = iter(values)
-    try:
-        previous_value = next(iter_values)
-    except StopIteration:
-        return
-    first = True
-    for value in iter_values:
-        yield first, False, previous_value
-        first = False
-        previous_value = value
-    yield first, True, previous_value
-
-class Reader:
-    def __init__(self, txt, split_term):
-        self._txt = txt
-        with open(txt) as f:
-            self.content = list(f.readlines())
-        self.split_term = re.compile(split_term)
-        self.history = 0
-        self.find_chapters()
-    def find_chapters(self):
-        lines = []
-        names = []
-        for i, l in enumerate(self.content):
-            if re.match(self.split_term, l):
-                lines.append(i)
-'''
-
-
 class Reader:
     def __init__(self, txt, split_term, history_cache=0):
         self._txt = txt
@@ -117,7 +85,7 @@ class TxtBrowser(App):
 
     show_tree = var(True)
     current_index = var(0)
-    boss_mode = var(True)
+    boss_mode = var(False)
 
     def __init__(self, *args, **kwargs):
         reader = kwargs.pop("reader", None)
@@ -125,6 +93,10 @@ class TxtBrowser(App):
             raise ValueError("Must input your reader")
         self.reader = reader
         self.save_path = kwargs.pop("save_path", "./default.pkl")
+        fake_file = kwargs.pop("fake_file", None)
+        with open(fake_file) as f:
+            fake_code = "".join(f.readlines())
+        self.fake_code = Syntax(fake_code, "python")
         super().__init__(*args, **kwargs)
 
     def watch_show_tree(self, show_tree: bool) -> None:
@@ -134,9 +106,14 @@ class TxtBrowser(App):
 
     def watch_boss_mode(self, boss_mode: bool) -> None:
         """Called when show_tree is modified."""
-        if not boss_mode:
+        if boss_mode:
             self.show_tree = False
-        self.query_one("#code-view", VerticalScroll).visible = boss_mode
+            self.query_one("#fake-code", Static).visible = True
+            self.query_one("#fake-code", Static).update(self.fake_code)
+        else:
+            self.query_one("#fake-code", Static).update("")
+            self.query_one("#fake-code", Static).visible = False
+        self.query_one("#code-view", VerticalScroll).visible = not boss_mode
 
     def watch_current_index(self, current_index):
         # self.query_one(ListView).index = current_index
@@ -146,7 +123,7 @@ class TxtBrowser(App):
         """Compose our UI."""
         with Container():
             yield OptionList(*self.reader.ch_names, id="tree-view")
-            yield Static(Syntax(FAKE_CODE, "python"), expand=True, id="fake-code")
+            yield Static(id="fake-code")
             with VerticalScroll(id="code-view"):
                 yield Static(id="code", expand=True)
                 # yield TextLog(highlight=True, markup=True, id="code")

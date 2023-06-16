@@ -7,11 +7,10 @@
 
 <div align="center">
   <div class="row" align="center">
-      <img src="./assets/en-1.png" width="32%" align="center"/>
-      <img src="./assets/en-2.png" width="32%" align="center"/>
-      <img src="./assets/en-3.png" width="32%" align="center"/>
+      <img src="./assets/en-1.png" width="40%" align="center"/>
+      👉 BOSS 👉
+      <img src="./assets/en-3.png" width="40%" align="center"/>
   </div>
-  <a align="center"> Find dickens in those images</a>
 </div>
 
 
@@ -34,13 +33,14 @@ Greate thanks to the wonderful projects: [`rich`](https://github.com/Textualize/
 
 * You can press `f` to show/hide the chapters pane
 * You can press `m`, `n` to forward/backward the current chapter
-* You can press `/` to enable BOSS mode! It will hide all the sneaky things and only leave a fake Python snippet.
+* You can press `/` to enable BOSS mode! It will hide all the sneaky things and only leave a fake Python snippet. *You can pass `-f <PYTHON FILE>` to use your own fake code!*
 
 ### Smart spliting
 
 Sneaky-reader supports you to use regluar expression (refer to the `re` module in python) to split your TXT into chapters. Using the command line option `-e` to pass your regluar expression. 
 
-Remember, always group your chapter name in first in your regular expression! *group the title with `()`*
+Remember, always group your chapter name in first in your regular expression!  *group the title with `(.*)`*
+
 ## Quick Start
 
 * Via `pip`: `pip install sneaky-reader`

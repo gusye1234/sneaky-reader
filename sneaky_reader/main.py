@@ -17,16 +17,20 @@ def commandline():
                         help="Pick the book from the cached list(use `-l` to look the list)")
     parser.add_argument('-r', '--reload', action="store_true",
                         help="Ignore cache")
+    parser.add_argument('-d', '--delete', default=-1, type=int,
+                        help="Delete a book cache")
+    parser.add_argument('-f', '--fake_file', default=__file__, type=str,
+                        help="Ignore cache")
     return parser.parse_args()
 
 
 def get_root_dir():
-    return os.path.dirname(os.path.dirname(__file__))
+    return os.path.expanduser("~")
 
 
 def get_cache_dir():
     root = get_root_dir()
-    cache_dir = os.path.join(root, "book_cache")
+    cache_dir = os.path.join(root, ".book_cache")
     if not os.path.exists(cache_dir):
         os.mkdir(cache_dir)
     return cache_dir
@@ -62,6 +66,13 @@ def main():
     if args.list:
         print_cache_name()
         exit()
+    if args.delete != -1:
+        book_paths = get_cache_books()
+        assert 0 <= args.delete <= len(
+            book_paths), f"Wrong index for book, expected in [0, {len(book_paths)}]"
+        cache_path = book_paths[args.delete]
+        os.remove(cache_path)
+        exit()
     if args.book != -1:
         book_paths = get_cache_books()
         assert 0 <= args.book <= len(
@@ -85,6 +96,7 @@ def main():
     else:
         if args.re == "":
             raise ValueError("Import a new book must set your `-e`")
-        abs_path = os.path.abspath(args.path)
+        abs_path = os.path.expanduser(args.path)
+        abs_path = os.path.abspath(abs_path)
         reader = Reader(abs_path, args.re)
-    TxtBrowser(reader=reader, save_path=cache_path).run()
+    TxtBrowser(reader=reader, save_path=cache_path, fake_file=args.fake_file).run()
