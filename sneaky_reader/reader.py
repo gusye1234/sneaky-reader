@@ -43,20 +43,32 @@ class Reader:
         for i, l in enumerate(self.content):
             if re.match(self.split_term, l):
                 lines.append(i)
-                names.append(re.match(self.split_term, l).group(1))
-        self.ch_lines = lines
-        self.ch_names = names
 '''
 
 
 class Reader:
-    def __init__(self, txt, split_term):
+    def __init__(self, txt, split_term, history_cache=0):
         self._txt = txt
         with open(txt) as f:
             self.content = list(f.readlines())
         self.split_term = re.compile(split_term)
-        self.history = 0
+        self.history = history_cache
         self.find_chapters()
+
+    @classmethod
+    def from_pkl(cls, pkl_file):
+        with open(pkl_file, 'rb') as f:
+            meta_data = pickle.load(f)
+            return cls(**meta_data)
+
+    def to_pkl(self, pkl_file):
+        with open(pkl_file, 'wb') as f:
+            meta_data = {
+                "txt": self._txt,
+                "split_term": self.split_term,
+                "history_cache": self.history
+            }
+            pickle.dump(meta_data, f)
 
     def find_chapters(self):
         lines = []
@@ -65,13 +77,20 @@ class Reader:
             if re.match(self.split_term, l.strip()):
                 lines.append(i)
                 names.append(re.match(self.split_term, l.strip()).group(1))
+            else:
+                if i == 0:
+                    lines.append(0)
+                    names.append("Begin")
         self.ch_lines = lines
         self.ch_names = names
         self.index = {n: i for i, n in enumerate(self.ch_names)}
 
     def get_chapter(self, name):
         index = self.index[name]
-        between = (self.ch_lines[index], self.ch_lines[index+1])
+        if index < len(self.index) - 1:
+            between = (self.ch_lines[index], self.ch_lines[index+1])
+        else:
+            between = (self.ch_lines[index], len(self.content))
         self.history = index
         return "".join(self.content[between[0]:between[1]])
 
@@ -90,13 +109,13 @@ class TxtBrowser(App):
         ("q", "quit", "Quit"),
         ("m", "forward_chapter", "Forward"),
         ("n", "backward_chapter", "Backward"),
-        ("s", "switch", "Switch"),
+        ("/", "switch", "Switch"),
     ]
 
     show_tree = var(True)
     current_index = var(0)
     boss_mode = var(True)
-    
+
     def __init__(self, *args, **kwargs):
         reader = kwargs.pop("reader", None)
         if reader is None:
@@ -112,7 +131,8 @@ class TxtBrowser(App):
 
     def watch_boss_mode(self, boss_mode: bool) -> None:
         """Called when show_tree is modified."""
-        self.show_tree = boss_mode
+        if not boss_mode:
+            self.show_tree = False
         self.query_one("#code-view", VerticalScroll).visible = boss_mode
 
     def watch_current_index(self, current_index):
@@ -143,7 +163,7 @@ class TxtBrowser(App):
             syntax = Panel(
                 content,
                 padding=(0, 0),
-                style="color(8)"
+                style="rgb(160,160,160)"
             )
         except Exception:
             code_view.update(Traceback(theme="github-dark", width=None))
@@ -187,10 +207,12 @@ class TxtBrowser(App):
         self.boss_mode = not self.boss_mode
 
     def exit(self, *args, **kwargs) -> None:
-        pickle.dump(self.reader, open(self.save_path, 'wb'))
+        self.reader.to_pkl(self.save_path)
         return super().exit(*args, **kwargs)
 
 
 if __name__ == "__main__":
 
     TxtBrowser().run()
+
+    from IPython import embed

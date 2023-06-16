@@ -3,6 +3,7 @@
 
 .DS_Store
 *.pkl
+book_cache/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
