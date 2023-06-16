@@ -122,7 +122,7 @@ class TxtBrowser(App):
     def compose(self) -> ComposeResult:
         """Compose our UI."""
         with Container():
-            yield OptionList(*self.reader.ch_names[:100], id="tree-view")
+            yield OptionList(*self.reader.ch_names, id="tree-view")
             yield Static(Syntax(FAKE_CODE, "python"), expand=True, id="fake-code")
             with VerticalScroll(id="code-view"):
                 yield Static(id="code", expand=True)
