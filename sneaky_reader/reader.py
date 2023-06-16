@@ -99,11 +99,14 @@ class Reader:
         content = self.get_chapter(name)
         return name, content
 
+def get_current_css(css_name):
+    parent = os.path.dirname(__file__)
+    return os.path.join(parent, css_name)
 
 class TxtBrowser(App):
     """Textual code browser app."""
 
-    CSS_PATH = "./code_browser.css"
+    CSS_PATH = get_current_css("code_browser.css")
     BINDINGS = [
         ("f", "toggle_files", "Toggle"),
         ("q", "quit", "Quit"),

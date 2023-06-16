@@ -15,6 +15,8 @@ def commandline():
                         help="Show all cached books")
     parser.add_argument('-b', '--book', default=-1, type=int,
                         help="Pick the book from the cached list(use `-l` to look the list)")
+    parser.add_argument('-r', '--reload', action="store_true",
+                        help="Ignore cache")
     return parser.parse_args()
 
 
@@ -69,7 +71,7 @@ def main():
         assert args.path != "", "Must input your book path"
         cache_path = get_cache_path(args.path)
 
-    if os.path.exists(cache_path):
+    if not args.reload and os.path.exists(cache_path):
         try:
             reader = Reader.from_pkl(cache_path)
         except TypeError:
@@ -83,5 +85,6 @@ def main():
     else:
         if args.re == "":
             raise ValueError("Import a new book must set your `-e`")
-        reader = Reader(args.path, args.re)
+        abs_path = os.path.abspath(args.path)
+        reader = Reader(abs_path, args.re)
     TxtBrowser(reader=reader, save_path=cache_path).run()

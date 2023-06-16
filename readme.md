@@ -20,8 +20,8 @@
 ## Features
 ### History saving
 
-Sneaky-reader implements a simple cache. You can use `-l` to list all the previous books, and use `-b ID` to quickly get the book. For example:
-```
+Sneaky-reader implements a simple cache mechanism. You can use `-l` to list all the previous books, and use `-b ID` to quickly get the book. For example:
+```shell
 $ sneaky_reader -l
 [0] CharlesDickens-OliverTwist
 [1] 红楼梦

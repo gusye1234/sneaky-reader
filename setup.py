@@ -21,11 +21,15 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=['sneaky_reader'],
+    package_data={
+        "": ["./sneaky_reader/*.css"]
+    },
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
+    include_package_data=True,
     python_requires='>=3.6',
     install_requires=["textual"],
     entry_points={
