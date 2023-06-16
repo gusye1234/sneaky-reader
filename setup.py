@@ -9,9 +9,9 @@ with open('./sneaky_reader/__init__.py') as f:
                 line = line.replace(' ', '').replace("\"", '').replace("\'", '').strip()
                 vars_project[v] = line.split('=')[1]
 
-with open('README.md', 'r') as fh:
+with open('readme.md', 'r') as fh:
     long_description = fh.read()
-
+print(long_description)
 setuptools.setup(
     name='sneaky_reader',
     url=vars_project['__url__'],

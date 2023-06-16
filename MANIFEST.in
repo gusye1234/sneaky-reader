@@ -1,1 +1,2 @@
 include sneaky_reader/*.css
+include readme.md
